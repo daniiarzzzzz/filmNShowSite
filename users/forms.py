@@ -1,6 +1,6 @@
 from django import forms
-from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
 
 from users.models import User
 
@@ -29,6 +29,10 @@ class RegisterForm(forms.ModelForm):
             raise ValidationError('User already registered')
         except User.DoesNotExist:
             pass
+
+        password = clean.get('password')
+        if password.isdigit():
+            raise ValidationError({'password': 'Password must not be all digit'})
 
     def save(self, *args, **kwargs):
         user = super().save()
